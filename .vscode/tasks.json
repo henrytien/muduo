@@ -1,0 +1,44 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cppbuild",
+			"label": "C/C++: g++.exe 生成活动文件",
+			"command": "C:\\cygwin64\\bin\\g++.exe",
+			"args": [
+				"-g",
+				"${file}",
+				"--std=c++17",
+				"-o",
+				"${fileDirname}\\${fileBasenameNoExtension}.exe",
+				"-lboost_system", "-lboost_date_time",
+			],
+			"options": {
+				"cwd": "${fileDirname}"
+			},
+			"problemMatcher": [
+				"$gcc",
+			],
+			"group": "build",
+			"detail": "编译器: C:\\cygwin64\\bin\\g++.exe"
+		}
+	]
+}
+
+// {
+//     "version": "0.1.0",
+//     "command": "g++",//对应"preLaunchTask"c++为g++, c为gcc
+//     "args": ["-g","${file}", "--std=c++14", "-o","${file}.exe","-lboost_system", "-lboost_date_time"],    // 编译命令参数
+//     "problemMatcher": {
+//         "owner": "cpp",
+//         "fileLocation": ["relative", "${workspaceRoot}"],
+//         "pattern": {
+//             "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+//             "file": 1,
+//             "line": 2,
+//             "column": 3,
+//             "severity": 4,
+//             "message": 5
+//         }
+//     }
+// }
