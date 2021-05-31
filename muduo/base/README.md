@@ -1,4 +1,8 @@
-`Timestamp.h`
+### install boost and setup
+[Installing boost libraries for GCC (MinGW) on Windows](https://gist.github.com/sim642/29caef3cc8afaa273ce6)
+[在 Visual Studio Code 中构建一个C++开发环境](https://www.jianshu.com/p/e254efbc8345)
+
+### `Timestamp.h`
 ```cpp
 ///
 /// Gets time difference of two timestamps, result in seconds.
@@ -13,3 +17,11 @@ inline double timeDifference(Timestamp high, Timestamp low)
   return static_cast<double>(diff) / Timestamp::kMicroSecondsPerSecond;
 }
 ```
+`boost::less_than_comparable<Timestamp>` 和`boost::equality_comparable<Timestamp>` 这两个类其实是两个是用来比较的， 类只要实现对operator==就会自动实现!=,less_than_comparable类 只要实现operator<，可自动实现>、<=、>=。
+
+- **static成员和函数**
+  > 查看这几个static函数的实现发现静态函数是没有对静态成员有写的操作，所以就没有上锁的操作，如果有静态函数的实现有对static成员的写操作，那么就会有性能上的下降，这时就应该考虑设计是否合理。
+- **static_assert断言**
+    >static_assert函数是boost提供的一个函数，该函数可以实现在编译期间断言的功能，如果在编译期间`static_assert`内语句不为真，那么就不能编译通过。
+
+  
