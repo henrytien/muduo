@@ -23,5 +23,27 @@ inline double timeDifference(Timestamp high, Timestamp low)
   > 查看这几个static函数的实现发现静态函数是没有对静态成员有写的操作，所以就没有上锁的操作，如果有静态函数的实现有对static成员的写操作，那么就会有性能上的下降，这时就应该考虑设计是否合理。
 - **static_assert断言**
     >static_assert函数是boost提供的一个函数，该函数可以实现在编译期间断言的功能，如果在编译期间`static_assert`内语句不为真，那么就不能编译通过。
+## `Thread.cc`
 
-  
+```cpp
+class ThreadNameInitializer
+{
+ public:
+  ThreadNameInitializer()
+  {
+    muduo::CurrentThread::t_threadName = "main";
+    CurrentThread::tid();
+    pthread_atfork(NULL, NULL, &afterFork);
+  }
+};
+```
+`pthread_atfor()`在子进程中调用`afterFork`，这里涉及到了在子进程里重新设置主线程，相当于多进程多线程，但是不推荐这样去使用，容易发生死锁。
+
+## `Mutex.h`
+```cpp
+// Prevent misuse like:
+// MutexLockGuard(mutex_);
+// A tempory object doesn't hold the lock for long!
+#define MutexLockGuard(x) error "Missing guard object name"
+```
+这里要是不看别人的代码，你又怎会知道呢？
