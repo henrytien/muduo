@@ -47,3 +47,26 @@ class ThreadNameInitializer
 #define MutexLockGuard(x) error "Missing guard object name"
 ```
 这里要是不看别人的代码，你又怎会知道呢？
+
+## `Conditon.h`
+```cpp
+void wait()
+  {
+    MutexLock::UnassignGuard ug(mutex_);
+    MCHECK(pthread_cond_wait(&pcond_, mutex_.getPthreadMutex()));
+  }
+``` 
+Condition类涉及到两个对象，`MutexLock`和`pthread_cond_t`
+
+## `CountDownLatch.h`
+```cpp
+void CountDownLatch::countDown()
+{
+  MutexLockGuard lock(mutex_);
+  --count_;
+  if (count_ == 0)
+  {
+    condition_.notifyAll();
+  }
+}
+```
