@@ -70,3 +70,23 @@ void CountDownLatch::countDown()
   }
 }
 ```
+
+## `BlockingQueue.h`
+```cpp
+ void put(T&& x)
+  {
+    MutexLockGuard lock(mutex_);
+    queue_.push_back(std::move(x));
+    notEmpty_.notify();
+  }
+  ```
+
+  ## `BoundBlockingQueue.h`
+  ```cpp
+  private:
+  mutable MutexLock          mutex_;
+  Condition                  notEmpty_ GUARDED_BY(mutex_);
+  Condition                  notFull_ GUARDED_BY(mutex_);
+  boost::circular_buffer<T>  queue_ GUARDED_BY(mutex_);
+  ```
+  `circular_buffer<T>` 循环队列，也可以使用数组实现。

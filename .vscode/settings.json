@@ -45,6 +45,9 @@
         "utility": "cpp",
         "numeric": "cpp",
         "list": "cpp",
-        "climits": "cpp"
+        "climits": "cpp",
+        "__config": "cpp",
+        "__threading_support": "cpp",
+        "*.ipp": "cpp"
     }
 }
