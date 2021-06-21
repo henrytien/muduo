@@ -11,6 +11,8 @@
 #include <muduo/base/Logging.h>
 #include <muduo/net/Channel.h>
 #include <muduo/net/Poller.h>
+#include <sys/eventfd.h>
+
 
 //#include <poll.h>
 
@@ -30,7 +32,16 @@ EventLoop* EventLoop::getEventLoopOfCurrentThread()
 {
   return t_loopInThisThread;
 }
-
+int createEventfd()
+{
+  int evtfd = ::eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
+  if (evtfd < 0)
+  {
+    LOG_SYSERR << "Failed in eventfd";
+    abort();
+  }
+  return evtfd;
+}
 EventLoop::EventLoop()
   : looping_(false),
     quit_(false),

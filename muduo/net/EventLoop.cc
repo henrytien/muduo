@@ -132,7 +132,7 @@ void EventLoop::loop()
   LOG_TRACE << "EventLoop " << this << " stop looping";
   looping_ = false;
 }
-
+// This function can cross thread by called.
 void EventLoop::quit()
 {
   quit_ = true;
