@@ -14,3 +14,11 @@ int createEventfd()
   return evtfd;
 }
 ```
+For an explanation of the terms used in this section, see attributes(7).
+
+       ┌──────────┬───────────────┬─────────┐
+       │Interface │ Attribute     │ Value   │
+       ├──────────┼───────────────┼─────────┤
+       │eventfd() │ Thread safety │ MT-Safe │
+       └──────────┴───────────────┴─────────┘
+
