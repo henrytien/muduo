@@ -44,7 +44,7 @@ class EPollPoller : public Poller
   void update(int operation, Channel* channel);
 
   typedef std::vector<struct epoll_event> EventList;
-  typedef std::map<int, Channel*> ChannelMap;
+  typedef std::map<int, Channel*> ChannelMap; // key is fd
 
   int epollfd_;
   EventList events_;
