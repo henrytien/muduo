@@ -73,3 +73,69 @@ Timestamp EPollPoller::poll(int timeoutMs, ChannelList* activeChannels)
 >       EPOLL_CLOEXEC
 >              Set the close-on-exec (FD_CLOEXEC) flag on the new file descriptor.  See the description of the O_CLOEXEC flag in open(2) for reasons why this may  be useful.
 
+- 如何管理`Channel`的生存周期呢？
+  ```cpp
+   // unlike in TimerQueue, which is an internal class,
+  // we don't expose Channel to client.
+  std::unique_ptr<Channel> wakeupChannel_;
+  ```
+  
+- `EventLoop`里`wakeup`函数的实现？
+  ```cpp
+    void EventLoop::wakeup()
+    {
+        uint64_t one = 1;
+        ssize_t n = sockets::write(wakeupFd_, &one, sizeof one);
+        if (n != sizeof one)
+        {
+            LOG_ERROR << "EventLoop::wakeup() writes " << n << " bytes instead of 8";
+        }
+    }
+  ```
+  
+- 请问这个函数能够实现同步和异步调用么？
+   ```cpp
+   void EventLoop::runInLoop(Functor cb)
+   {
+     if (isInLoopThread())
+     {
+       cb(); // sync
+     }
+     else
+     {
+       queueInLoop(std::move(cb)); // async
+     }
+   }
+   ```
+   
+- 请问`I/O`线程能负责一部分计算任务么？
+  
+  ```c++
+  void EventLoop::doPendingFunctors()
+  {
+    std::vector<Functor> functors;
+    callingPendingFunctors_ = true;
+  
+    {
+    MutexLockGuard lock(mutex_);
+    functors.swap(pendingFunctors_);
+    }
+  
+    for (const Functor& functor : functors)
+    {
+      functor();
+    }
+    callingPendingFunctors_ = false;
+  }
+  ```
+  你知道为什么只对`swap`部分加锁么？
+  - 减少临界区的长度
+  - 不会阻塞其他线程的`queueInLoop`
+  - 避免了死锁
+  
+- 如果直接for循环调用`doPendingFunctors()`,会发生什么？
+
+   死循环的可能。
+
+   
+
