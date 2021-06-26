@@ -137,5 +137,30 @@ Timestamp EPollPoller::poll(int timeoutMs, ChannelList* activeChannels)
 
    死循环的可能。
 
-   
+## `EventLoopThread.cc`
+
+```c++
+class EventLoop;
+
+class EventLoopThread : noncopyable
+{
+ public:
+  typedef std::function<void(EventLoop*)> ThreadInitCallback;
+
+  EventLoopThread(const ThreadInitCallback& cb = ThreadInitCallback(),
+                  const string& name = string());
+  ~EventLoopThread();
+  EventLoop* startLoop();			// start an IO thread
+
+ private:
+  void threadFunc();
+
+  EventLoop* loop_ GUARDED_BY(mutex_);
+  bool exiting_;
+  Thread thread_;
+  MutexLock mutex_;
+  Condition cond_ GUARDED_BY(mutex_);
+  ThreadInitCallback callback_;
+};
+```
 
