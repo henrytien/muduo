@@ -47,7 +47,7 @@ void EventLoopThreadPool::start(const ThreadInitCallback& cb)
   }
   if (numThreads_ == 0 && cb)
   {
-    cb(baseLoop_);
+    cb(baseLoop_); // No I/O thread.
   }
 }
 
